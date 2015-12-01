@@ -46,9 +46,10 @@ Widget::Widget(QWidget *parent)
     equality_sign=new QPushButton("=");
     result=new QLineEdit;
 
-//    validator=new QValidator("//g");
-//    field1->setValidator(validator);
-//    field2->setValidator(validator);
+    validator=new QIntValidator(-500,500);
+    field1->setValidator(validator);
+    field2->setValidator(validator);
+    result->setReadOnly(true);
 
     QHBoxLayout* my_layout=new QHBoxLayout;
     my_layout->addWidget(field1);

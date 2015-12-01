@@ -8,7 +8,7 @@
 #include<QPushButton>
 #include<QHBoxLayout>
 #include<QString>
-#include <QValidator>
+#include <QIntValidator>
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -21,7 +21,7 @@ private:
     QPushButton* clear_button;
     QPushButton* exit_button;
     int factor1, factor2, my_result;
-    QValidator* validator;
+    QIntValidator* validator;
 public slots:
     void set_factor1();
     void set_factor2();
