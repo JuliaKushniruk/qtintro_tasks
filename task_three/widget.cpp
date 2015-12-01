@@ -4,12 +4,20 @@ void Widget::set_factor1()
 {
     QString field_value=field1->text();
     factor1=field_value.toInt();
+    if(field_value=="")
+    {
+        field1->setText("0");
+    }
 }
 
 void Widget::set_factor2()
 {
     QString field_value=field2->text();
     factor2=field_value.toInt();
+    if(field_value=="")
+    {
+        field2->setText("0");
+    }
 }
 
 void Widget::calculate_my_result()
@@ -22,6 +30,13 @@ void Widget::set_result()
     result->setText(QString::number(my_result));
 }
 
+void Widget::clear_fields()
+{
+    field1->setText("");
+    field2->setText("");
+    result->setText("");
+}
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
@@ -31,6 +46,10 @@ Widget::Widget(QWidget *parent)
     equality_sign=new QPushButton("=");
     result=new QLineEdit;
 
+//    validator=new QValidator("//g");
+//    field1->setValidator(validator);
+//    field2->setValidator(validator);
+
     QHBoxLayout* my_layout=new QHBoxLayout;
     my_layout->addWidget(field1);
     my_layout->addWidget(operation);
@@ -38,13 +57,15 @@ Widget::Widget(QWidget *parent)
     my_layout->addWidget(equality_sign);
     my_layout->addWidget(result);
 
-    exit_button=new QPushButton("EXIT");
+    clear_button=new QPushButton("Clear");
+    exit_button=new QPushButton("Exit");
 
+    connect(clear_button,SIGNAL(clicked(bool)),this,SLOT(clear_fields()));
     connect(exit_button,SIGNAL(clicked(bool)),this,SLOT(close()));
 
     QHBoxLayout* button_layout=new QHBoxLayout;
     button_layout->addStretch();
-    button_layout->addStretch();
+    button_layout->addWidget(clear_button);
     button_layout->addWidget(exit_button);
 
     QVBoxLayout* final_layout=new QVBoxLayout;

@@ -7,27 +7,27 @@
 #include<QHBoxLayout>
 #include<QVBoxLayout>
 #include<QLabel>
-
+#include<QTimer>
 class Widget : public QWidget
 {
     Q_OBJECT
-
     QRadioButton *red_button;
-    QRadioButton *orange_button;
+    QRadioButton *yellow_button;
     QRadioButton *green_button;
 
     QPushButton* start_button;
     QPushButton* stop_button;
 
-    QLabel* red_label;
-    QLabel* orange_label;
-    QLabel* green_label;
+    QTimer *timer;
+
+    bool toRed;
+
+
 public slots:
-    void red_light_on();
-    void orange_light_on();
-    void green_light_on();
+    void change_light();
     void disable_lights();
     void enable_lights();
+    void set_timer_start();
 public:
     Widget(QWidget *parent = 0);
     ~Widget();

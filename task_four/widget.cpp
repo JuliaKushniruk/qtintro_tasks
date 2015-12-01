@@ -1,88 +1,106 @@
 #include "widget.h"
 
-void Widget::red_light_on()
+void Widget::change_light()
 {
-    red_label->setStyleSheet("background-color: red;");
-    orange_label->setStyleSheet("background-color: white;");
-    green_label->setStyleSheet("background-color: white;");
-}
+    if(red_button->isChecked()==true)
+    {
+        red_button->setChecked(false);
+        yellow_button->setChecked(true);
 
-void Widget::orange_light_on()
-{
-    red_label->setStyleSheet("background-color: white;");
-    orange_label->setStyleSheet("background-color: yellow;");
-    green_label->setStyleSheet("background-color: white;");
-}
+        red_button->setStyleSheet("background-color: grey;");
+        yellow_button->setStyleSheet("background-color: yellow;");
+        toRed=false;
+    }
+    else if(yellow_button->isChecked()==true)
+    {
+        yellow_button->setChecked(false);
+        yellow_button->setStyleSheet("background-color: grey;");
 
-void Widget::green_light_on()
-{
-    red_label->setStyleSheet("background-color: white;");
-    orange_label->setStyleSheet("background-color: white;");
-    green_label->setStyleSheet("background-color: green;");
-}
+        if(toRed)
+        {
+            red_button->setChecked(true);
+            red_button->setStyleSheet("background-color: red;");
+        }
+        else
+        {
+             green_button->setChecked(true);
+             green_button->setStyleSheet("background-color: green;");
+        }
+    }
 
+    else if(green_button->isChecked()==true)
+    {
+        green_button->setChecked(false);
+        yellow_button->setChecked(true);
+
+        yellow_button->setStyleSheet("background-color: yellow;");
+        green_button->setStyleSheet("background-color: grey;");
+        toRed=true;
+    }
+    else
+    {
+        red_button->setChecked(true);
+        red_button->setStyleSheet("background-color: red;");
+    }
+}
 void Widget::disable_lights()
 {
-    red_label->setStyleSheet("background-color: grey;");
-    orange_label->setStyleSheet("background-color: grey;");
-    green_label->setStyleSheet("background-color: grey;");
-    disconnect(red_button,SIGNAL(clicked(bool)),this,SLOT(red_light_on()));
-    disconnect(orange_button,SIGNAL(clicked(bool)),this,SLOT(orange_light_on()));
-    disconnect(green_button,SIGNAL(clicked(bool)),this,SLOT(green_light_on()));
+    red_button->setCheckable(false);
+    yellow_button->setCheckable(false);
+    green_button->setCheckable(false);
+
+    red_button->setStyleSheet("background-color: grey;");
+    yellow_button->setStyleSheet("background-color: grey;");
+    green_button->setStyleSheet("background-color: grey;");
 }
 
 void Widget::enable_lights()
 {
-    red_label->setStyleSheet("background-color: white;");
-    orange_label->setStyleSheet("background-color: white;");
-    green_label->setStyleSheet("background-color: white;");
-    connect(red_button,SIGNAL(clicked(bool)),this,SLOT(red_light_on()));
-    connect(orange_button,SIGNAL(clicked(bool)),this,SLOT(orange_light_on()));
-    connect(green_button,SIGNAL(clicked(bool)),this,SLOT(green_light_on()));
+    toRed=false;
+
+    red_button->setCheckable(true);
+    yellow_button->setCheckable(true);
+    green_button->setCheckable(true);
+
+}
+
+void Widget::set_timer_start()
+{
+    timer->start(1000);
 }
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
     red_button=new QRadioButton("red");
-    orange_button=new QRadioButton("orange");
+    yellow_button=new QRadioButton("yellow");
     green_button=new QRadioButton("green");
-    QVBoxLayout *layout1=new QVBoxLayout;
-    layout1->addWidget(red_button);
-    layout1->addWidget(orange_button);
-    layout1->addWidget(green_button);
-
-    red_label=new QLabel;
-    orange_label=new QLabel;
-    green_label=new QLabel;
-    QVBoxLayout *layout2=new QVBoxLayout;
-    layout2->addWidget(red_label);
-    layout2->addWidget(orange_label);
-    layout2->addWidget(green_label);
-
-    QHBoxLayout* top_layout=new QHBoxLayout;
-    top_layout->addLayout(layout1);
-    top_layout->addLayout(layout2);
 
     start_button=new QPushButton("start");
     stop_button=new QPushButton("stop");
-    QHBoxLayout *bottom_layout=new QHBoxLayout;
-    bottom_layout->addStretch();
-    bottom_layout->addWidget(start_button);
-    bottom_layout->addWidget(stop_button);
+
+    QVBoxLayout *layout=new QVBoxLayout;
+    layout->addWidget(red_button);
+    layout->addWidget(yellow_button);
+    layout->addWidget(green_button);
+    layout->addWidget(start_button);
+    layout->addWidget(stop_button);
 
 
-    QVBoxLayout *final_layout=new QVBoxLayout;
-    final_layout->addLayout(top_layout);
-    final_layout->addLayout(bottom_layout);
+    red_button->setStyleSheet("background-color: grey;");
+    yellow_button->setStyleSheet("background-color: grey;");
+    green_button->setStyleSheet("background-color: grey;");
 
+    timer=new QTimer;
+    disable_lights();
+    connect(start_button,SIGNAL(clicked(bool)),this,SLOT(set_timer_start()));
     connect(start_button,SIGNAL(clicked(bool)),this,SLOT(enable_lights()));
+
+    connect(stop_button,SIGNAL(clicked(bool)),timer,SLOT(stop()));
     connect(stop_button,SIGNAL(clicked(bool)),this,SLOT(disable_lights()));
 
-    red_label->setStyleSheet("background-color: grey;");
-    orange_label->setStyleSheet("background-color: grey;");
-    green_label->setStyleSheet("background-color: grey;");
-    setLayout(final_layout);
+    connect(timer,SIGNAL(timeout()),this,SLOT(change_light()));
+   setLayout(layout);
 }
 
 Widget::~Widget()

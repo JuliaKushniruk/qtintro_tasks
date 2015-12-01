@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include<QPushButton>
-
+#include<QVBoxLayout>
 namespace Ui {
 class MainWindow;
 }
